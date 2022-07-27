@@ -34,20 +34,26 @@ export function createCar(req, res) {
 }
 
 export function updateCar(req, res) {
+  // destructor
   const { id } = req.params
   // connect to db
   const db = dbConnect()
   //update doc(id) in cars collection using req.body
   let patchCar = req.body
-  db.collection("cars").doc(id).set(patchCar, {merge: true})
-  .then(doc => {
-    res.status(201).send({
+  db.collection("cars")
+    .doc(id)
+    .upate(patchCar)
+    //this is for upsert
+    //.set(patchCar, { merge: true })
+    .then((doc) => {
+      // send response to so it was complete
+      res.status(202).send({
         success: true,
-        id: doc.id
+        id: doc.id,
+      })
     })
-  })
 
-  .catch((err) => handleError(err, res))
+    .catch((err) => handleError(err, res))
 }
 
 function handleError(err, res) {
